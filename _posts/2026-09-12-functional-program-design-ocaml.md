@@ -3,6 +3,7 @@ layout: post
 title: "Functional Program Design in OCaml: Building a Task Tracker"
 description: "Design a complete OCaml program around domain types, explicit state transitions, small module interfaces, and a testable core, using a task-tracker CLI."
 date: 2026-09-12
+published: false
 author: "Nana Adjei Manu"
 category: "engineering"
 tags: ["OCaml", "Functional Programming", "Software Design"]
