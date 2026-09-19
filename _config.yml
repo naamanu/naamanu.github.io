@@ -5,6 +5,7 @@ description: >-
   about type systems, semantics, and reliable software.
 url: "https://nanamanu.com"
 baseurl: ""
+analytics_url: "https://simpl-analytics-production.up.railway.app"
 
 author:
   name: Nana Adjei Manu
