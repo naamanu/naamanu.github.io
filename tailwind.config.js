@@ -13,6 +13,7 @@ module.exports = {
     "./_layouts/**/*.html",
     "./_includes/**/*.html",
     "./_posts/**/*.md",
+    "./_research/**/*.md",
     "./*.html",
     "./*.md",
   ],

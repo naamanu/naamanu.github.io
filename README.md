@@ -26,9 +26,10 @@ compiled CSS after a rebuild.
 | Path | Purpose |
 | --- | --- |
 | `_posts/` | Blog posts, `YYYY-MM-DD-slug.md` |
+| `_research/` | Research posts, published at `/research/:name/` |
 | `_layouts/` | `default`, `home`, `page`, `post`, `tag` |
 | `_includes/` | `head`, `header`, `footer`, `post-list-item` |
-| `_data/` | `nav`, `projects`, `experience`, `research` — content for the non-blog pages |
+| `_data/` | `nav`, `projects`, `experience` — content for the non-blog pages |
 | `assets/css/tailwind.css` | Tailwind source |
 | `assets/css/main.css` | Compiled output (committed) |
 | `assets/css/syntax.css` | Rouge github theme, via `rougify style github`, background swapped to the site's code fill |
@@ -56,6 +57,25 @@ Posts are published at `/blog/:slug/`. Tag pages are generated automatically by
 
 Set `math: true` only when needed — it's what pulls the KaTeX bundle onto the
 page.
+
+## Writing a research post
+
+Add a Markdown file to `_research/`, such as `typestate-typescript.md`:
+
+```yaml
+---
+title: "Research title"
+description: "A short summary for the Research listing and homepage."
+date: 2026-09-12
+kind: Research proposal
+math: true      # optional, enables KaTeX
+---
+```
+
+Research posts use the blog post layout and appear newest first at `/research/`.
+Their URLs are `/research/<filename-without-extension>/`. The homepage uses the
+same collection, so no separate data entry is needed. Restart Jekyll after
+changing `_config.yml`.
 
 ## Deployment
 

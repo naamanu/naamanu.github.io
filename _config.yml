@@ -30,6 +30,11 @@ kramdown:
 
 permalink: /blog/:slug/
 
+collections:
+  research:
+    output: true
+    permalink: /research/:name/
+
 plugins:
   - jekyll-feed
   - jekyll-sitemap
@@ -47,6 +52,11 @@ jekyll-archives:
     tag: "/tags/:name/"
 
 defaults:
+  - scope:
+      path: ""
+      type: research
+    values:
+      layout: post
   - scope:
       path: ""
       type: posts

@@ -24,6 +24,11 @@ layout: default
   {% endif %}
 </article>
 
+{% if page.collection == 'research' %}
+<nav class="mt-12 border-t border-rule pt-4 text-[15px]" aria-label="Research navigation">
+  <a href="{{ '/research/' | relative_url }}" class="link">&larr; All research</a>
+</nav>
+{% else %}
 <nav class="mt-12 border-t border-rule pt-4 flex flex-col gap-y-1 text-[15px]" aria-label="Adjacent posts">
   {% if page.next %}
     <a href="{{ page.next.url | relative_url }}" class="link">&larr; {{ page.next.title }}</a>
@@ -32,3 +37,4 @@ layout: default
     <a href="{{ page.previous.url | relative_url }}" class="link">{{ page.previous.title }} &rarr;</a>
   {% endif %}
 </nav>
+{% endif %}

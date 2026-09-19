@@ -1,35 +1,15 @@
 ---
 layout: default
 title: Research
-description: Selected work on semantics, type systems, and observable systems.
+description: Research proposals and notes on type systems, semantics, and reliable software.
 permalink: /research/
 ---
 
 {% include page-title.html title=page.title description=page.description %}
 
-<ul class="flex flex-col gap-y-8">
-  {% for item in site.data.research %}
-    <li class="flex flex-col gap-y-1">
-      <h2 class="font-semibold leading-snug">{{ item.title }}</h2>
-      <p class="kind">{{ item.kind }}{% if item.venue %} &middot; {{ item.venue }}{% endif %} &middot; {{ item.year }}</p>
-      {% if item.authors and item.authors.size > 1 %}
-        <p class="text-[15px] text-stone-700">
-          {% for author in item.authors %}
-            {%- if author == site.author.name -%}<strong>{{ author }}</strong>{%- else -%}{{ author }}{%- endif -%}
-            {%- unless forloop.last %}, {% endunless -%}
-          {% endfor %}
-        </p>
-      {% endif %}
-      {% if item.description %}
-        <p class="text-[15px] text-stone-700">{{ item.description }}</p>
-      {% endif %}
-      {% if item.links %}
-        <ul class="flex flex-wrap gap-x-4 text-[15px]">
-          {% for link in item.links %}
-            <li><a href="{{ link.url }}"{% if link.url contains '://' %} target="_blank" rel="noopener noreferrer"{% endif %} class="link">{{ link.label }} &rarr;</a></li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    </li>
+<ul class="flex flex-col gap-y-5">
+  {% assign research_posts = site.research | sort: 'date' | reverse %}
+  {% for post in research_posts %}
+    {% include post-list-item.html post=post %}
   {% endfor %}
 </ul>
