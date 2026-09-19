@@ -10,7 +10,7 @@ permalink: /projects/
 <ul class="flex flex-col gap-y-5">
   {% for project in site.data.projects %}
     <li class="flex flex-col gap-y-0.5">
-      <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer" class="link">{{ project.name }} &nearr;</a>
+      <a href="{{ project.url }}" data-analytics-event="project_click" data-analytics-target="{{ project.name | slugify | truncate: 80, '' }}" target="_blank" rel="noopener noreferrer" class="link">{{ project.name }} &nearr;</a>
       <p>{{ project.description }}</p>
       <p class="kind">{{ project.tags | join: " · " }}</p>
     </li>

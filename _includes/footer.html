@@ -3,13 +3,13 @@
     <div class="border-t border-rule pt-4 flex flex-wrap justify-between gap-x-8 gap-y-3 text-sm text-stone-500">
       <div class="flex flex-col">
         <span>{{ site.author.name }} &middot; Berlin</span>
-        <a href="mailto:{{ site.author.email }}" class="quiet-link">{{ site.author.email }}</a>
+        <a data-analytics-event="email_click" href="mailto:{{ site.author.email }}" class="quiet-link">{{ site.author.email }}</a>
       </div>
       <ul class="flex flex-wrap gap-x-5">
-        <li><a class="quiet-link" href="https://github.com/{{ site.github_username }}" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-        <li><a class="quiet-link" href="https://twitter.com/{{ site.twitter_username }}" target="_blank" rel="noopener noreferrer">Twitter</a></li>
-        <li><a class="quiet-link" href="{{ site.linkedin_url }}" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-        <li><a class="quiet-link" href="{{ '/feed.xml' | relative_url }}">RSS</a></li>
+        <li><a class="quiet-link" data-analytics-event="github_click" href="https://github.com/{{ site.github_username }}" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a class="quiet-link" data-analytics-event="twitter_click" href="https://twitter.com/{{ site.twitter_username }}" target="_blank" rel="noopener noreferrer">Twitter</a></li>
+        <li><a class="quiet-link" data-analytics-event="linkedin_click" href="{{ site.linkedin_url }}" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a class="quiet-link" data-analytics-event="rss_click" href="{{ '/feed.xml' | relative_url }}">RSS</a></li>
       </ul>
     </div>
   </div>
