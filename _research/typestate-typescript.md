@@ -16,12 +16,12 @@ My research asks how a static analyzer could check these lifecycle rules in Type
 Consider a toy file API with three operations: `open()`, `read()`, and `close()`. Each handle starts closed and follows this protocol:
 
 | Current state | Operation | Next state |
-| --- | --- | --- |
-| Closed | `open()` | Open |
-| Open | `read()` | Open |
-| Open | `close()` | Closed |
+| ------------- | --------- | ---------- |
+| Closed        | `open()`  | Open       |
+| Open          | `read()`  | Open       |
+| Open          | `close()` | Closed     |
 
-Every operation missing from the table is forbidden. Reading a closed handle is invalid, as is opening an already open one. A real API might allow repeated calls; its specification would need to say so.
+Every operation missing from the table is forbidden. Reading a closed handle is invalid, as is opening an already open one. A real API might allow repeated calls and its specification would need to say so.
 
 This is a **typestate protocol**: the operations permitted on an object depend on its state. A checker can follow the transitions through straight-line code and flag a read after a close.
 
@@ -32,25 +32,32 @@ TypeScript APIs can encode some lifecycle constraints using distinct state types
 Here is a complete example. The resource operations are synchronous so that the only suspension comes from `await`. `FileHandle` is a toy class, not Node.js's file API.
 
 ```ts
+const FileStatus = {
+  Closed: "Closed",
+  Open: "Open",
+} as const;
+
+type FileStatus = (typeof FileStatus)[keyof typeof FileStatus];
+
 class FileHandle {
-  private state: "Closed" | "Open" = "Closed";
+  private state: FileStatus = "Closed";
 
   open(): void {
-    if (this.state !== "Closed") {
+    if (this.state === FileStatus.Open) {
       throw new Error("Cannot open an open handle");
     }
     this.state = "Open";
   }
 
   read(): string {
-    if (this.state !== "Open") {
+    if (this.state === FileStatus.Closed) {
       throw new Error("Cannot read a closed handle");
     }
     return "contents";
   }
 
   close(): void {
-    if (this.state !== "Open") {
+    if (this.state === FileStatus.Closed) {
       throw new Error("Cannot close a closed handle");
     }
     this.state = "Closed";
@@ -68,7 +75,7 @@ async function example(): Promise<string> {
   return file.read();
 }
 
-example().catch(error => console.error(error.message));
+example().catch((error) => console.error(error.message));
 // Cannot read a closed handle
 ```
 
@@ -92,16 +99,16 @@ The research question is therefore:
 
 ## What would justify keeping a fact?
 
-I use **interference** to mean the effects of other computations on facts the current computation relies on. Here, the fact is “this handle is Open”; the interfering effect is the callback's transition to Closed.
+I use **interference** to mean the effects of other computations on facts the current computation relies on. Here, the fact is “this handle is Open”, the interfering effect is the callback's transition to Closed.
 
 An analyzer must consider the computations that can run before resumption. Depending on the environment it supports, these may include registered callbacks, promise continuations, event handlers, and work they schedule in turn. Unknown library behavior needs an explicit treatment too.
 
 There are three useful starting cases:
 
-| During suspension | Evidence needed to preserve the state |
-| --- | --- |
-| No intervening computation can reach the object | A confinement argument |
-| Another computation can reach it but preserves its state | A summary of its relevant effects |
+| During suspension                                                | Evidence needed to preserve the state               |
+| ---------------------------------------------------------------- | --------------------------------------------------- |
+| No intervening computation can reach the object                  | A confinement argument                              |
+| Another computation can reach it but preserves its state         | A summary of its relevant effects                   |
 | Another computation may change its state, or has unknown effects | Further evidence; preservation is not yet justified |
 
 A local variable does not establish confinement: the closure in the example captures the object. Nor is a callback's name evidence of its effects. A method called `read` might consume a resource or invoke another callback.
@@ -123,7 +130,7 @@ first.read(); // Same object, now Closed
 
 The analysis needs to attach protocol facts to abstract object identities. Variables and field paths describe how code reaches those objects.
 
-**Must-alias** information says two references definitely identify the same object; **may-alias** information says they might. A definite update to one precisely represented object can replace its previous state. An uncertain update may need to retain several possibilities. Even a single abstract identity can represent multiple runtime objects, so a singleton points-to set alone does not justify replacing all its state information.
+**Must-alias** information says two references definitely identify the same object and **may-alias** information says they might. A definite update to one precisely represented object can replace its previous state. An uncertain update may need to retain several possibilities. Even a single abstract identity can represent multiple runtime objects, so a singleton points-to set alone does not justify replacing all its state information.
 
 Field assignments complicate reachability:
 
@@ -184,11 +191,11 @@ Protocol safety also does not imply eventual cleanup, completion, or freedom fro
 
 I will compare three policies on the same programs:
 
-| Policy | What survives `await`? |
-| --- | --- |
-| Conservative baseline | No previously established protocol-state facts |
-| Confinement only | Facts about objects proven unreachable by intervening computations |
-| Interference summaries | Additional facts proven stable under modeled effects |
+| Policy                 | What survives `await`?                                             |
+| ---------------------- | ------------------------------------------------------------------ |
+| Conservative baseline  | No previously established protocol-state facts                     |
+| Confinement only       | Facts about objects proven unreachable by intervening computations |
+| Interference summaries | Additional facts proven stable under modeled effects               |
 
 The original awaited-expression footprint rule can serve as a deliberately unsound comparator, with missed violations reported explicitly.
 

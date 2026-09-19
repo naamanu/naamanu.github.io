@@ -6,6 +6,8 @@ kind: Research note
 math: true
 ---
 
+> **Early draft — work in progress.** This calculus is still being developed and may contain substantial inconsistencies, incorrect rules, and gaps in the reasoning. Treat it as an evolving proposal rather than a verified formal system. Corrections and counterexamples are welcome.
+
 **Status:** Revised semantic design with base typing and explicit proof obligations. No executable TS₀ semantics or mechanized proof is claimed.
 
 Companion reading: [Can TypeScript Know a File Is Still Open After await?]({{ '/research/typestate-typescript/' | relative_url }})
